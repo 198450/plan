@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROJECT OVERVIEW | 计划介绍</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Helvetica Neue', 'PingFang SC', sans-serif; }
+        
+        body { 
+            height: 100vh; 
+            overflow: hidden; 
+            background-color: #050508; 
+            color: #fff; 
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 背景环境光晕 */
+        .ambient-light {
+            position: absolute;
+            width: 800px; height: 800px;
+            background: radial-gradient(circle, rgba(0, 243, 255, 0.08) 0%, transparent 60%);
+            top: -200px; left: -200px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* 主容器：左右不对称布局 */
+        .main-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 1200px;
+            padding: 0 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 80px;
+        }
+
+        /* ================= 左侧：核心计划介绍 ================= */
+        .plan-section {
+            flex: 1;
+            position: relative;
+            padding: 50px;
+            
+            /* 👇 加入了图片背景和黑色遮罩 👇 */
+            background-image: url('bg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-color: rgba(5, 5, 8, 0.5); /* 这层遮罩保证文字清晰 */
+            background-blend-mode: overlay; /* 让图片和底色融合得更高级 */
+            
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-left: 2px solid #00f3ff;
+            box-shadow: inset 20px 0 40px -20px rgba(0, 243, 255, 0.15), 0 30px 60px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            animation: slideInLeft 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* 装饰角 */
+        .plan-section::before, .plan-section::after {
+            content: ''; position: absolute; width: 20px; height: 20px;
+        }
+        .plan-section::before { top: -1px; right: -1px; border-top: 2px solid #00f3ff; border-right: 2px solid #00f3ff; }
+        .plan-section::after { bottom: -1px; right: -1px; border-bottom: 2px solid #00f3ff; border-right: 2px solid #00f3ff; }
+
+        .sub-tag {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem; color: #00f3ff; letter-spacing: 3px;
+            margin-bottom: 25px; display: flex; align-items: center;
+        }
+        .sub-tag::before { content: ''; display: inline-block; width: 40px; height: 2px; background: #00f3ff; margin-right: 15px; }
+
+        .plan-section h1 {
+            font-size: 4.5rem; font-weight: 800; letter-spacing: -2px; line-height: 1.1; margin-bottom: 25px;
+            background: linear-gradient(135deg, #ffffff 20%, #a0f0ff 50%, #00f3ff 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 40px rgba(0, 243, 255, 0.3);
+        }
+
+        .plan-section p {
+            font-size: 1.05rem; line-height: 1.9; color: #b0bcc9; font-weight: 300;
+            text-align: justify; max-width: 90%;
+        }
+
+        /* ================= 右侧：4个团队成员卡片 ================= */
+        .team-section {
+            flex-shrink: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            opacity: 0;
+            animation: slideInRight 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+        }
+
+        .member-card {
+            position: relative;
+            width: 160px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.4s ease;
+            cursor: pointer;
+        }
+
+        .member-card:hover {
+            transform: translateY(-10px);
+        }
+
+        /* 圆形头像容器 */
+        .avatar-wrapper {
+            width: 100px; height: 100px;
+            border-radius: 50%;
+            padding: 3px;
+            background: linear-gradient(135deg, rgba(0, 243, 255, 0.8), transparent 60%);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .avatar-wrapper img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            filter: grayscale(20%) contrast(1.1);
+        }
+
+        /* 方形名字框 */
+        .name-box {
+            width: 100%;
+            padding: 12px 0;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 4px;
+            text-align: center;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            color: #e0e0e0;
+            letter-spacing: 2px;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .member-card:hover .name-box {
+            background: rgba(0, 243, 255, 0.1);
+            border-color: rgba(0, 243, 255, 0.4);
+            color: #00f3ff;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+        }
+
+        /* 动画 */
+        @keyframes slideInLeft {
+            0% { opacity: 0; transform: translateX(-50px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes slideInRight {
+            0% { opacity: 0; transform: translateX(50px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+
+        /* 手机端自适应 */
+        @media (max-width: 1000px) {
+            .main-container { flex-direction: column; gap: 60px; padding: 40px 20px; }
+            .plan-section { padding: 30px; }
+            .plan-section h1 { font-size: 3rem; }
+            .team-section { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 环境光 -->
+    <div class="ambient-light"></div>
+
+    <div class="main-container">
+        <!-- 左侧：计划介绍 -->
+        <div class="plan-section">
+            <div class="sub-tag">Ascend Block the bridge // 2026</div>
+            <h1>代号：<br>堵桥上计划</h1>
+            <p>
+                航天城中寒风吹，巡飞弹鸣少年归。                          发射桥下鼠人泪，定狙游走飞升退。
+                撤离点堵万仙队，刘涛不语浮木泪。
+                宿命天成终有时，浮木悔而乌不悔。
+            </p>
+        </div>
+
+        <!-- 右侧：4个成员 -->
+        <div class="team-section">
+            <!-- 成员 1 -->
+            <div class="member-card">
+                <div class="avatar-wrapper">
+                    <img src="my-photo.jpg" alt="Avatar">
+                </div>
+                <div class="name-box">偷我的是哥诶 // 策划</div>
+            </div>
+
+            <!-- 成员 2 -->
+            <div class="member-card">
+                <div class="avatar-wrapper">
+                    <img src="my-photo.jpg" alt="Avatar">
+                </div>
+                <div class="name-box">偷我的是哥诶 // 执行</div>
+            </div>
+
+            <!-- 成员 3 -->
+            <div class="member-card">
+                <div class="avatar-wrapper">
+                    <img src="my-photo.jpg" alt="Avatar">
+                </div>
+                <div class="name-box">全年干员博 // 执行</div>
+            </div>
+
+            <!-- 成员 4 -->
+            <div class="member-card">
+                <div class="avatar-wrapper">
+                    <img src="my-photo.jpg" alt="Avatar">
+                </div>
+                <div class="name-box">下官傲柔 // 执行</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
